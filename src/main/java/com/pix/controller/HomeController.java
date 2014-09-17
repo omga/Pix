@@ -72,7 +72,7 @@ public class HomeController {
         session.setAttribute("albums",albums);
         System.out.println(albums.get(0).getName());
         showHomepage(model, session);
-        return "home";//redirect:/users/"+username;
+        return "home";
 
     }
 
