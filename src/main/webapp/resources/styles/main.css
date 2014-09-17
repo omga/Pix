@@ -1,0 +1,132 @@
+body {
+    background-color: #e1d8ea;
+    padding: 1em;
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+h1,h2,h3{
+    font-family: Verdana
+}
+
+input {
+    border: 1px solid #d1eab0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0.5em;
+    resize: none;
+    width: 100%;
+}
+#username,#password{
+    width: 150px;
+}
+select {
+    border: 1px solid #d1eab0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    font-family: Verdana ;
+    color: #8492c0;
+    border-radius: 5px;
+    padding: 0.5em;
+    resize: none;
+
+}
+
+.button, button:visited {
+    border: 1px solid #C0C083;
+    color: #000000;
+    background-color: #cad8ff;
+    width: 100%;
+    position: relative;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+.button:hover {
+    background-color: #AAB0CC;
+}
+
+.button:active {
+    background-color: #AABBCC;
+}
+
+td {
+    padding: 1em;
+    margin: 1em;
+    border: 0;
+    color: #F0F0F0;
+    background-color: #AABBEE;
+}
+th {
+    padding: 1em;
+    margin: 1em;
+    border: 0;
+    color: #F0F0F0;
+    background-color: #AABBEE;
+}
+
+tr {
+    border: 0;
+}
+
+
+.title {
+    color: #AABBCC;
+    font-size: 20px;
+}
+
+#left
+{
+    float:left;
+    width: 80%;
+}
+#right {
+    float: right;
+    width: 20%;
+}
+
+#profile-container
+{
+
+    width: 1500px;
+    margin : 10px auto 0 auto;
+}
+#profile-top
+{
+    text-align: center;
+    background-color: #8492c0;
+    width: 100%;
+
+    position: static;
+}
+#profile-left
+{
+    background-color: #8492c0;
+    float:left;
+    width: 10%;
+    height: 500px;
+    padding: 0.5em;
+
+}
+#profile-right
+{
+    background-color: #AABBEE;
+    float:right;
+    width: 87%;
+
+    padding: 0.5em;
+}
+
+
+/*#left*/
+/*{*/
+    /*clear:both;*/
+    /*width: 100%;*/
+/*}*/
