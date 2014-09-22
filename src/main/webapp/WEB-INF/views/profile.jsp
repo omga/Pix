@@ -31,8 +31,8 @@
                 <c:set var="count" value="${count + 1}" scope="page"/>
                 <c:if test="${count%3==0}"><tr/><tr></c:if>
 
-                <td width="100" class="${picture.album_id}"><img id="${picture.album_id} content="image/jpeg" src="<s:url value="/resources/Pictures/${picture.uuid}"/>" width="300" />
-                    <div id="${picture.album_id}">${picture.name}</div>
+                <td width="100" class="${picture.album.id}"><img id="${picture.album.id} content="image/jpeg" src="<s:url value="/resources/Pictures/${picture.uuid}"/>" width="300" />
+                    <div id="${picture.album.id}">${picture.name}</div>
 
                 </td>
 

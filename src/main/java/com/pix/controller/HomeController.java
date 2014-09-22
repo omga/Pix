@@ -68,9 +68,11 @@ public class HomeController {
         session.setAttribute("user",pu);
         session.setAttribute("username",username);
         List<Album> albums=new ArrayList<Album>();
-                albums= pixService.getAlbums(pu.getId());
+                albums= pixService.getAlbums(pu);
         session.setAttribute("albums",albums);
-        System.out.println(albums.get(0).getName());
+        System.out.println("_____________________________________________"+albums.size());
+        System.out.println("_____________________________________________"+albums.get(0));
+        System.out.println("_____________________________________________"+albums.get(0).getPictures());
         showHomepage(model, session);
         return "home";
 
@@ -91,24 +93,30 @@ public class HomeController {
         System.out.println(user);
         System.out.println(user.getId());
         pixService.addUser(user);
-        System.out.println(user);
-        return "redirect:/users/"+user.getUserName();
+        Album album=new Album("main");
+        album.setUser(user);
+        pixService.createAlbum(album);
+        return "home";//+user.getUserName();
     }
 
     @RequestMapping(value = "/users/{username}",method = RequestMethod.GET)
     public String showUserPage(@PathVariable String username,Model model,HttpSession session){
-        int user_id=((PixUser)session.getAttribute("user")).getId();
-        List<Album> albums=pixService.getAlbums(user_id);
+        PixUser user=(PixUser)session.getAttribute("user");
+        List<Album> albums=pixService.getAlbums(user);
         //model.addAttribute("user",pixService.getUser(username));
         model.addAttribute("albums",albums);
-        List<Picture> pictures=pixService.getUserPictures(user_id);
+        List<Picture> pictures=pixService.getUserPictures(user);
+        pictures.get(0).setAlbum(albums.get(0));
+        System.out.println(pictures.get(0)+" album: "+albums.get(0)+" user: "+user);
+        System.out.println(pictures.get(0).getId()+" ____ "+pictures.get(0).getAlbum());
+
         model.addAttribute("pics",pictures);
         return "profile";
     }
     @RequestMapping(value = "/{username}",method = RequestMethod.GET)
     public String showUserTestPage(@PathVariable String username,Model model,HttpSession session){
-        int user_id=((PixUser)session.getAttribute("user")).getId();
-        List<Album> albums=pixService.getAlbums(user_id);
+        PixUser user=(PixUser)session.getAttribute("user");
+        List<Album> albums=pixService.getAlbums(user);
         model.addAttribute("albums",albums);
         return "profile2";
     }
@@ -130,13 +138,19 @@ public class HomeController {
         pixService.uploadPic(request);
         return "redirect:/";
     }
-
+    //
     @RequestMapping(value = "/picture-ajax",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody List<Picture> getAlbumPics(@RequestParam("id") String id){//@PathVariable String name,@PathVariable String description){
+    public @ResponseBody List<Picture> getAlbumPics(@RequestParam("id") String id,HttpSession session){//@PathVariable String name,@PathVariable String description){
         //String var=req.getParameter("id");
         System.out.println("________________________________________"+id);
+        List<Picture> pictures=null;
         int album_id=Integer.valueOf(id);
-        List<Picture> pictures=pixService.getAlbumPictures(album_id);
+        List<Album> list=(List<Album>)session.getAttribute("albums");
+        for(Album album:list){
+            if(album.getId()==album_id)
+                pictures=pixService.getAlbumPictures(album);
+        }
+        System.out.println(pictures.get(0));
         return pictures;
     }
 
@@ -150,9 +164,11 @@ public class HomeController {
         album.setDescription(description);
         album.setCreationDate(new Timestamp(GregorianCalendar.getInstance().getTime().getTime()));
         try {
-            album.setUser(((PixUser) session.getAttribute("user")).getId());
+            album.setUser(((PixUser) session.getAttribute("user")));
             pixService.createAlbum(album);
         }catch (Exception e){res="FAILUREEEEEEEEEEEEE";}
+        List<Album> albums=pixService.getAlbums((PixUser)session.getAttribute("user"));
+        session.setAttribute("albums",albums);
         return res;
     }
 

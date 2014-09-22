@@ -42,12 +42,12 @@ public class PixDaoImpl implements PixDao {
 
         try{
             currentSession().save(user);
+
+
         }catch (Exception e){
             e.printStackTrace(); return;
         }
-        Album album=new Album("main");
-        album.setUser(user.getId());
-        addAlbum(album);
+
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -83,38 +83,48 @@ public class PixDaoImpl implements PixDao {
     }
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
-    public List<Album> getAlbums(int user_id) {
-        Query query=currentSession().createQuery("from Album where user_id=:user_id");
-        query.setInteger("user_id", user_id);
+    public List<Album> getAlbums(PixUser user) {
+        Query query=currentSession().createQuery("from Album where user=:user");
+        query.setEntity("user", user);
         List<Album> albums= query.list();
         System.out.println(albums);
         return albums;
+    }
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    @Override
+    public void updateAlbum(Album album) {
+        currentSession().update(album);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
     public void addPicture(Picture pic) {
-        try{currentSession().save(pic);}
-        catch (JDBCConnectionException se){se.printStackTrace();}
-        catch (ConstraintViolationException ce){ce.printStackTrace();}
-        catch (Exception e){e.printStackTrace();}
+        currentSession().save(pic);
+        //currentSession().getTransaction().commit();
+//        try{
+//            currentSession().merge(pic);
+//            currentSession().flush();
+//            currentSession().close();}
+//        catch (JDBCConnectionException se){se.printStackTrace();}
+//        catch (ConstraintViolationException ce){ce.printStackTrace();}
+//        catch (Exception e){e.printStackTrace();}
 
     }
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
-    public List<Picture> getUserPictures(int user_id){
+    public List<Picture> getUserPictures(PixUser user){
         List<Picture> pictures;
-        Query query=currentSession().createQuery("from Picture where user_id=:user_id");
-        query.setInteger("user_id", user_id);
+        Query query=currentSession().createQuery("from picture where user=:user");
+        query.setEntity("user", user);
         pictures=query.list();
         return pictures;
     }
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
-    public List<Picture> getAlbumPictures(int album_id){
+    public List<Picture> getAlbumPictures(Album album){
         List<Picture> pictures;
-        Query query=currentSession().createQuery("from Picture where album_id=:album_id");
-        query.setInteger("album_id", album_id);
+        Query query=currentSession().createQuery("from picture where album=:album");
+        query.setEntity("album", album);
         pictures=query.list();
         return pictures;
     }
@@ -123,7 +133,7 @@ public class PixDaoImpl implements PixDao {
     @Override
     public List<Picture> getRecentPictures(){
         List<Picture> pictures;
-        Query query=currentSession().createQuery("from Picture order by id desc");
+        Query query=currentSession().createQuery("from picture order by id desc");
         query.setMaxResults(3);
         pictures=query.list();
         return pictures;

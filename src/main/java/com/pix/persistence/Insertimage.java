@@ -1,4 +1,5 @@
 package com.pix.persistence;
+import com.pix.model.Album;
 import com.pix.model.Picture;
 import com.pix.model.PixUser;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -75,7 +76,7 @@ public class Insertimage {
 
 
                         //uploadedPic.setAlbum_id((Integer)request.getAttribute("album_id"));
-                        uploadedPic.setUser_id(((PixUser)request.getSession().getAttribute("user")).getId());
+                        uploadedPic.setUser(((PixUser)request.getSession().getAttribute("user")));
                         if(name.equals("ImageFile")&&value!=null)
                         {
                             ImageFile=value;
@@ -88,7 +89,15 @@ public class Insertimage {
                             uploadedPic.setDescription(value);
                         }else if(name.equals("album")&&value!=null){
                             System.out.println("VALUE:"+value);
-                            uploadedPic.setAlbum_id(Integer.valueOf(value));
+                            int id_album=Integer.valueOf(value);
+                            List<Album> list=(List<Album>)request.getSession().getAttribute("albums");
+                            for(Album album:list){
+                                if(album.getId()==id_album){
+                                    uploadedPic.setAlbum(album);
+                                    album.getPictures().add(uploadedPic);
+                                }
+
+                            }
                         }
                     }
                     else

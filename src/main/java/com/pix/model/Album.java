@@ -1,10 +1,16 @@
 package com.pix.model;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Andrew on 21.04.14.
@@ -13,19 +19,23 @@ import java.util.List;
 @Table(name = "album")
 public class Album implements Serializable {
     @Id
+    @Column(name="id")
+    @SequenceGenerator(name="album_id_seq",
+            sequenceName="album_id_seq",
+            allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="album_id_seq")
-    @SequenceGenerator(name="album_id_seq", sequenceName="album_id_seq", allocationSize=1)
     private Integer id;
-    private int user_id;
     @Column(name = "album_name")
     private String name;
     private String description;
     @Column(name = "creation_date")
     private Date creationDate = new Date();
-    @Transient
-    private String[] labels;
-    @Transient
-    private List<Picture> pictures = new ArrayList<Picture>();
+    @ManyToOne()
+    @JoinColumn(name="USER_ID",nullable = false)
+    private PixUser user;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "album",fetch = FetchType.EAGER)
+    private List<Picture> pictures;
 
     public Album() {
     }
@@ -35,7 +45,7 @@ public class Album implements Serializable {
     }
 
     public void addPicture(Picture picture){
-        picture.setAlbum_id(this.id);
+        picture.setAlbum(this);
         pictures.add(picture);
     }
 
@@ -47,12 +57,12 @@ public class Album implements Serializable {
         this.id = id;
     }
 
-    public int getUser() {
-        return user_id;
+    public PixUser getUser() {
+        return user;
     }
 
-    public void setUser(int user_id) {
-        this.user_id = user_id;
+    public void setUser(PixUser user) {
+        this.user = user;
     }
 
     public String getName() {
@@ -79,14 +89,6 @@ public class Album implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public String[] getLabels() {
-        return labels;
-    }
-
-    public void setLabels(String[] labels) {
-        this.labels = labels;
-    }
-
     public List<Picture> getPictures() {
         return pictures;
     }
@@ -94,6 +96,7 @@ public class Album implements Serializable {
     public void setPictures(List<Picture> pictures) {
         this.pictures = pictures;
     }
+
     public String toString(){
         return "Album "+name+", description:"+description;
     }

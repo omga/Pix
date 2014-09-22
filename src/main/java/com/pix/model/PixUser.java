@@ -1,10 +1,12 @@
 package com.pix.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="pixuser")
@@ -12,9 +14,11 @@ public class PixUser implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="pixuser_id_user_seq")
-    @SequenceGenerator(name="pixuser_id_user_seq", sequenceName="pixuser_id_user_seq", allocationSize=1)
-    @Column(name="id_user")
+    @Column(name="id")
+    @SequenceGenerator(name="pixuser_id_seq",
+            sequenceName="pixuser_id_seq",
+            allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="pixuser_id_seq")
     private int id;
     @Column(name="username", length = 20)
     @Size(min=3,max=20,message = "username must be between 3 and 20 characters")
@@ -27,13 +31,18 @@ public class PixUser implements Serializable {
     @Column(name="email")
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[A-Za-z]{2,4}")
     private String email;
+    @NotNull
     @Column(name="password",length = 20)
     @Size(min=6,max=20,message = "password must be betweend 6 and 20 characters long.")
     private String password;
     @Transient
     private List<Comment> comments;
-    @Transient
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user",fetch = FetchType.EAGER)
     private List<Album> albums;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    private List<Picture> pictures;
 
     public PixUser(){
 
@@ -110,6 +119,14 @@ public class PixUser implements Serializable {
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
+    }
+
+    public List<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<Picture> pictures) {
+        this.pictures = pictures;
     }
 
     public int getId() {

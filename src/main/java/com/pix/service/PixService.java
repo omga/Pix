@@ -39,8 +39,9 @@ public class PixService {
         int size=allPics.size();
         return (size>num) ? allPics.subList(size-num,size) : allPics;
     }
-    public List<Picture> getAlbumPictures(int album_id){
-        return pixDao.getAlbumPictures(album_id);
+
+    public List<Picture> getAlbumPictures(Album album){
+        return pixDao.getAlbumPictures(album);
     }
 
     public void addUser(PixUser user){
@@ -63,6 +64,8 @@ public class PixService {
     public void uploadPic(HttpServletRequest request){
         Insertimage ii=new Insertimage();
         Picture picture=ii.proceed(request);
+        System.out.println("-----------------____________------------------------++++++++_________________"+picture.getId()+"_________________ "+picture.getAlbum().getPictures().get(0));
+       // updateAlbum(picture.getAlbum());
         pixDao.addPicture(picture);
     }
 
@@ -70,15 +73,18 @@ public class PixService {
         pixDao.addTest(tst);
     }
 
-    public List<Album> getAlbums(int user_id){
-        return pixDao.getAlbums(user_id);
+    public List<Album> getAlbums(PixUser user){
+        return pixDao.getAlbums(user);
     }
 
     public void createAlbum(Album album){
         pixDao.addAlbum(album);
     }
-    public List<Picture> getUserPictures(int user_id){
-        return pixDao.getUserPictures(user_id);
+    public void updateAlbum(Album album){
+        pixDao.updateAlbum(album);
+    }
+    public List<Picture> getUserPictures(PixUser user){
+        return pixDao.getUserPictures(user);
     }
 
 

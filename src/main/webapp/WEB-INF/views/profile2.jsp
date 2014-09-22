@@ -55,8 +55,12 @@
                     //$(".test").html(pic1);
                     //$("#wideTable").append('<img content="image/jpeg" src="/resources/Pictures/'+pic1+'" width="300" />');
                 },
-                error : function() {
-                    alert('error');
+                error: function (request, textStatus, errorThrown) {
+                    if (textStatus == 'error') {
+                        $(".test").html(request.responseText).fadeOut(50000);
+                    }else{
+                        $(".test").html(request.responseText).fadeOut(50000);
+                        alert('error');}
                 }
             });
         });

@@ -13,11 +13,13 @@ public interface PixDao {
     PixUser getUser(String username);
     PixUser loginUser(String username, String pass);
     void addAlbum(Album album);
-    List<Album> getAlbums(int user_id);
+    List<Album> getAlbums(PixUser user);
+    void updateAlbum(Album album);
     void addPicture(Picture pic);
-    List<Picture> getUserPictures(int user_id);
-    List<Picture> getAlbumPictures(int album_id);
+    List<Picture> getUserPictures(PixUser user);
+    List<Picture> getAlbumPictures(Album album);
     List<Picture> getRecentPictures();
+
 
     void addTest(TestEntity obj);
 

@@ -1,5 +1,7 @@
 package com.pix.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,12 +13,11 @@ import java.util.UUID;
 /**
  * Created by Andrew on 21.04.14.
  */
-@Entity
+@Entity(name = "picture")
 public class Picture implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="picture_pic_id_seq")
-    @SequenceGenerator(name="picture_pic_id_seq", sequenceName="picture_pic_id_seq", allocationSize=1)
-    @Column(name="pic_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="picture_id_seq")
+    @SequenceGenerator(name="picture_id_seq", sequenceName="picture_id_seq", allocationSize=1)
     private Integer id;
     @Column(name = "pic_uuid")
     private String uuid;
@@ -25,10 +26,15 @@ public class Picture implements Serializable {
     private long size;
     @Column(name = "date")
     private Date uploadDate;
-    private int album_id;
-    private int user_id;
-    @Transient
-    private Set<Comment> comments = new HashSet<Comment>();
+    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name="ALBUM_ID",nullable = false)
+    private Album album;
+    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name="USER_ID",nullable = false)
+    private PixUser user;
+
     @Column(name = "is_private")
     private boolean isPrivate=false;
 
@@ -45,10 +51,6 @@ public class Picture implements Serializable {
         this.description=description;
     }
 
-
-    public void addComment(Comment comment){
-        comments.add(comment);
-    }
 
     public Integer getId() {
         return id;
@@ -97,28 +99,20 @@ public class Picture implements Serializable {
         this.uploadDate = uploadDate;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
+    public PixUser getUser() {
+        return user;
     }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public void setUser(PixUser user) {
+        this.user = user;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public Album getAlbum() {
+        return album;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public int getAlbum_id() {
-        return album_id;
-    }
-
-    public void setAlbum_id(int album_id) {
-        this.album_id = album_id;
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 
     public boolean isPrivate() {
@@ -127,5 +121,10 @@ public class Picture implements Serializable {
 
     public void setPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
+    }
+
+    @Override
+    public String toString() {
+        return "picture: "+getName()+" uuid: "+getUuid()+" size: "+getSize()+" ALB AND USER:"+ user+" "+album;
     }
 }
