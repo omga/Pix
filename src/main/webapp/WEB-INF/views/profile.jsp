@@ -13,7 +13,8 @@
 <div id="profile-container">
 
 <div id="profile-top">
-    <h1>Hello ${sessionScope.user.userName}             <a href="/" >pix home page</a>              <a href="/upload">upload an image</a>    </h1>
+    <h1>Hello ${sessionScope.user.userName} <a href="/">pix home page</a> <a href="/upload">upload an image</a> <a
+            href="<c:url value="/static/j_spring_security_logout" />"> Logout</a></h1>
 </div>
 <div id="profile-left">
     <b>ALBUMS</b><br/>
@@ -31,8 +32,11 @@
                 <c:set var="count" value="${count + 1}" scope="page"/>
                 <c:if test="${count%3==0}"><tr/><tr></c:if>
 
-                <td width="100" class="${picture.album.id}"><img id="${picture.album.id} content="image/jpeg" src="<s:url value="/resources/Pictures/${picture.uuid}"/>" width="300" />
-                    <div id="${picture.album.id}">${picture.name}</div>
+        <td width="100" class="${picture.album.id}"><img id="${picture.album.id}" content="image/jpeg"
+                                                         src="<s:url value="/resources/Pictures/${picture.uuid}"/>"
+                                                         width="300"/>
+
+            <div id="${picture.album.id}">${picture.name}</div>
 
                 </td>
 

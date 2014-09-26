@@ -3,26 +3,26 @@ package com.pix.controller;
 import com.pix.model.Album;
 import com.pix.model.Picture;
 import com.pix.model.PixUser;
+import com.pix.service.MyAuthUser;
 import com.pix.service.PixService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.*;
+import javax.validation.Valid;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -36,8 +36,19 @@ public class HomeController {
     private PixService pixService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String showHomepage(Model model, HttpSession session){
+    public String showHomepage(Model model, HttpSession session, Authentication auth, Principal principal) {
+        if (auth != null) {
+            try {
+                User user = (User) ((Authentication) principal).getPrincipal();
+                PixUser pu = ((MyAuthUser) user).getPixUser();
+                session.setAttribute("user", pu);
+                session.setAttribute("username", pu.getUserName());
+                session.setAttribute("albums", pu.getAlbums());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+        }
         Picture pic1=new Picture("1.jpg");
         pic1.setName("Jessica1");
         Picture pic2=new Picture("4.png");
@@ -53,27 +64,24 @@ public class HomeController {
     }
 
     //USER LOGIN
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String signIn(Model model,HttpSession session,HttpServletRequest request){
         String username=request.getParameter("j_username");
         String pass=request.getParameter("j_password");
-
         logger.info("parameters: 1= "+username+" 2= "+pass);
         PixUser pu=pixService.login(username,pass);
         if(pu==null){
             model.addAttribute("message","wrong password or username, try again");
-            showHomepage(model,session);
+            showHomepage(model, session, null, null);
             return "home";
         }
+
         session.setAttribute("user",pu);
         session.setAttribute("username",username);
-        List<Album> albums=new ArrayList<Album>();
-                albums= pixService.getAlbums(pu);
-        session.setAttribute("albums",albums);
-        System.out.println("_____________________________________________"+albums.size());
-        System.out.println("_____________________________________________"+albums.get(0));
-        System.out.println("_____________________________________________"+albums.get(0).getPictures());
-        showHomepage(model, session);
+
+        //List<Album> albums=new ArrayList<Album>();
+        //        albums= pixService.getAlbums(pu);
+        // session.setAttribute("albums",albums);
         return "home";
 
     }
@@ -102,13 +110,13 @@ public class HomeController {
     @RequestMapping(value = "/users/{username}",method = RequestMethod.GET)
     public String showUserPage(@PathVariable String username,Model model,HttpSession session){
         PixUser user=(PixUser)session.getAttribute("user");
-        List<Album> albums=pixService.getAlbums(user);
+        //List<Album> albums=pixService.getAlbums(user);
         //model.addAttribute("user",pixService.getUser(username));
-        model.addAttribute("albums",albums);
+        //model.addAttribute("albums",albums);
         List<Picture> pictures=pixService.getUserPictures(user);
-        pictures.get(0).setAlbum(albums.get(0));
-        System.out.println(pictures.get(0)+" album: "+albums.get(0)+" user: "+user);
-        System.out.println(pictures.get(0).getId()+" ____ "+pictures.get(0).getAlbum());
+        // pictures.get(0).setAlbum(albums.get(0));
+        //System.out.println(pictures.get(0)+" album: "+albums.get(0)+" user: "+user);
+        // System.out.println(pictures.get(0).getId()+" ____ "+pictures.get(0).getAlbum());
 
         model.addAttribute("pics",pictures);
         return "profile";
@@ -116,8 +124,8 @@ public class HomeController {
     @RequestMapping(value = "/{username}",method = RequestMethod.GET)
     public String showUserTestPage(@PathVariable String username,Model model,HttpSession session){
         PixUser user=(PixUser)session.getAttribute("user");
-        List<Album> albums=pixService.getAlbums(user);
-        model.addAttribute("albums",albums);
+//        List<Album> albums=pixService.getAlbums(user);
+//        model.addAttribute("albums",albums);
         return "profile2";
     }
 

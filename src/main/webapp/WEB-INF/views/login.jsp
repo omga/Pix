@@ -7,8 +7,8 @@
     <table id="right">
         <tr>
             <td>
-                <form method="post" action="/">
-                    <table class="body">
+                <form method="post" action="/login">
+                <table class="body">
                         <tr>
                             <th align="right"><label for="username">Username: </label></th>
                             <td align="left"><input id="username"

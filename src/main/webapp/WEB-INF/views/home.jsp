@@ -44,7 +44,13 @@
     <br/><br/>
     <h3><a href="/users/${username}" style="">profile</a></h3>
         <br/><br/>
-        <h3><a href="/${username}" style="">profile2</a></h3>
+
+        <h3><a href="/${username}" style="">profile (using ajax)</a></h3>
+        <br/><br/>
+
+        <h3><a href="<c:url value="/static/j_spring_security_logout" />">Logout</a>
+        </h3>
+
     </div>
     </c:otherwise>
 </c:choose>

@@ -4,10 +4,10 @@ import com.pix.model.Album;
 import com.pix.model.Picture;
 import com.pix.model.PixUser;
 import com.pix.model.TestEntity;
+import com.pix.persistence.Insertimage;
+import com.pix.persistence.PixDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import com.pix.persistence.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import java.util.List;
 @Service("PixService")
 public class PixService {
     PixDao pixDao;
+    private List<Picture> allPics = new ArrayList<Picture>();
+
+
     @Autowired
-    PixService(PixDao pixDaoImpl){
-        this.pixDao=pixDaoImpl;
+    PixService(PixDao pixDaoImpl) {
+        this.pixDao = pixDaoImpl;
     }
-
-
-    private List<Picture> allPics=new ArrayList<Picture>();
 
     public List<Picture> getAllPics() {
         return allPics;
@@ -51,14 +51,13 @@ public class PixService {
     }
 
     public PixUser getUser(String username){
-        PixUser pu= new PixUser();//ssssssssssssssssssssss
-        pu.setUserName(username);
-        return pu;
+
+        return pixDao.getUser(username);
     }
 
     public PixUser login(String username, String password){
-        PixUser pu=pixDao.loginUser(username,password);
-        return pu;
+
+        return pixDao.loginUser(username, password);
     }
 
     public void uploadPic(HttpServletRequest request){
