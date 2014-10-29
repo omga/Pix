@@ -37,7 +37,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="JDK" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test-mvc:1.0.0.M2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="JBoss 7.2.0.Final-redhat-8" level="application_server_libraries" />
